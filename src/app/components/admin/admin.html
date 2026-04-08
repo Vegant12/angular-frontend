@@ -1,0 +1,99 @@
+<div class="container mt-4">
+  <h2>Admin Dashboard</h2>
+
+  @if (errorMessage) {
+    <div class="alert alert-danger mt-3" role="alert">{{ errorMessage }}</div>
+  }
+  @if (formMessage) {
+    <div class="alert alert-success mt-3" role="alert">{{ formMessage }}</div>
+  }
+
+  <div class="card mt-3 p-3">
+    <h4>{{ editingFoodId ? 'Update Food' : 'Create Food' }}</h4>
+    <div class="row g-2">
+      <div class="col-md-3">
+        <input class="form-control" placeholder="Name" [(ngModel)]="foodForm.name" />
+      </div>
+      <div class="col-md-3">
+        <input class="form-control" placeholder="Description" [(ngModel)]="foodForm.description" />
+      </div>
+      <div class="col-md-2">
+        <input class="form-control" type="number" placeholder="Price" [(ngModel)]="foodForm.price" />
+      </div>
+      <div class="col-md-4">
+        <input class="form-control" placeholder="Image URL" [(ngModel)]="foodForm.imageUrl" />
+      </div>
+    </div>
+    <div class="d-flex gap-2 mt-3">
+      <button class="btn btn-primary" (click)="saveFood()">
+        {{ editingFoodId ? 'Update Food' : 'Create Food' }}
+      </button>
+      @if (editingFoodId) {
+        <button class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+      }
+    </div>
+  </div>
+
+  <h4 class="mt-4">Foods</h4>
+  @if (loadingFoods) {
+    <p>Loading foods...</p>
+  } @else {
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Price</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let food of foods">
+          <td><img [src]="food.imageUrl" [alt]="food.name" width="80" /></td>
+          <td>{{ food.name }}</td>
+          <td>{{ food.description }}</td>
+          <td>${{ food.price }}</td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary me-2" (click)="editFood(food)">Edit</button>
+            <button class="btn btn-sm btn-danger" (click)="deleteFood(food.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  }
+
+  <h4 class="mt-4">Orders</h4>
+  @if (loadingOrders) {
+    <p>Loading orders...</p>
+  } @else if (orders.length === 0) {
+    <p>No orders available.</p>
+  } @else {
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Total</th>
+          <th>Items</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of orders">
+          <td>#{{ order.id }}</td>
+          <td>{{ order.orderDate || 'N/A' }}</td>
+          <td>{{ order.status }}</td>
+          <td>${{ order.totalAmount ?? 0 }}</td>
+          <td>
+            <ul class="mb-0">
+              <li *ngFor="let item of order.items">
+                {{ item.food.name }} x{{ item.quantity }} (${{ item.price }})
+              </li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  }
+</div>

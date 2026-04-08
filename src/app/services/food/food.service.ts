@@ -27,4 +27,14 @@ export class FoodService {
     createFood(food: Food): Observable<Food> {
         return this.httpClient.post<Food>(this.baseURL, food);
     }
+
+    // PUT update food
+    updateFood(id: number, food: Food): Observable<Food> {
+        return this.httpClient.put<Food>(`${this.baseURL}/${id}`, food);
+    }
+
+    // DELETE food
+    deleteFood(id: number): Observable<{ deleted: boolean }> {
+        return this.httpClient.delete<{ deleted: boolean }>(`${this.baseURL}/${id}`);
+    }
 }
