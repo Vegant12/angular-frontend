@@ -46,10 +46,16 @@
                   Back
                 </button>
     
-                <button class="btn btn-primary">
+                <button class="btn btn-primary" (click)="addToCart()">
                   Add to Cart
                 </button>
               </div>
+
+              @if (cartMessage) {
+                <div class="alert alert-info mt-3 mb-0" role="alert">
+                  {{ cartMessage }}
+                </div>
+              }
     
             </div>
     

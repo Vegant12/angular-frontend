@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet, RouterLinkWithHref } from '@angular/router';
-import { FoodList } from "./food-list/food-list";
+import { FoodList } from "./components/food-list/food-list";
 
 @Component({
   selector: 'app-root',
