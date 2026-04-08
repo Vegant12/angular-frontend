@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Cart, CartItem } from '../../services/cart/cart';
+import { OrderService } from '../../services/order/order.service';
+import { forkJoin, of } from 'rxjs';
 
 @Component({
   selector: 'app-cart',
@@ -14,8 +16,13 @@ export class CartComponent implements OnInit {
   cartItems: CartItem[] = [];
   loading = true;
   errorMessage: string | null = null;
+  checkoutMessage: string | null = null;
+  isCheckingOut = false;
 
-  constructor(private cartService: Cart) {}
+  constructor(
+    private cartService: Cart,
+    private orderService: OrderService
+  ) {}
 
   ngOnInit(): void {
     this.loadCartItems();
@@ -47,6 +54,52 @@ export class CartComponent implements OnInit {
       error: (err) => {
         console.error(err);
         this.errorMessage = 'Failed to remove item from cart. Please try again.';
+      },
+    });
+  }
+
+  checkout(): void {
+    if (this.cartItems.length === 0 || this.isCheckingOut) {
+      return;
+    }
+
+    this.isCheckingOut = true;
+    this.errorMessage = null;
+    this.checkoutMessage = null;
+
+    const orderPayload = {
+      status: 'PENDING',
+      items: this.cartItems.map((item) => ({
+        food: item.food,
+        quantity: item.quantity,
+        price: item.food.price,
+      })),
+    };
+
+    this.orderService.createOrder(orderPayload).subscribe({
+      next: (createdOrder) => {
+        const removeCalls = this.cartItems.map((item) =>
+          this.cartService.deleteCartItem(item.id)
+        );
+
+        const removeRequest$ = removeCalls.length > 0 ? forkJoin(removeCalls) : of([]);
+        removeRequest$.subscribe({
+          next: () => {
+            this.cartItems = [];
+            this.checkoutMessage = `Order #${createdOrder.id ?? ''} placed successfully.`;
+            this.isCheckingOut = false;
+          },
+          error: (err) => {
+            console.error(err);
+            this.errorMessage = 'Order created, but failed to clear cart items.';
+            this.isCheckingOut = false;
+          },
+        });
+      },
+      error: (err) => {
+        console.error(err);
+        this.errorMessage = 'Failed to checkout. Please try again.';
+        this.isCheckingOut = false;
       },
     });
   }
