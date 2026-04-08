@@ -1,0 +1,19 @@
+<h2>Food List</h2>
+<table class = "table table-striped">
+    <thead>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Price</th>
+    </thead>
+    <tbody>
+        <tr *ngFor = "let food of foods">
+            <td>
+                <img [src]="food.imageUrl" alt="{{ food.name }}" width="100" />
+            </td>
+            <td>{{ food.name }}</td>
+            <td>{{ food.description }}</td>
+            <td>{{ food.price }}</td>
+        </tr>
+    </tbody>
+</table>
