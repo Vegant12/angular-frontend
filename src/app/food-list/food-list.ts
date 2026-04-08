@@ -1,23 +1,28 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Food } from '../food';
+import { FoodService } from '../food.service';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-food-list',
-  imports: [CommonModule],
+  standalone: true,
+  imports: [CommonModule, RouterLink],
   templateUrl: './food-list.html',
   styleUrl: './food-list.css',
 })
-export class FoodList {
+export class FoodList implements OnInit{
   foods: Food[] = [];
 
+  constructor(private foodService: FoodService){}
+
   ngOnInit(): void {
-    this.foods = [{
-      "id": 1,
-      "name": "burger",
-      "description": "classic burger",
-      "imageUrl": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd",
-      "price": 22000
-    }]
+    this.getFoods();
+  }
+
+  private getFoods(){
+    this.foodService.getFoodsList().subscribe(data => {
+      this.foods = data;
+    })
   }
 }

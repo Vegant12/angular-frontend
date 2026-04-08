@@ -1,10 +1,13 @@
 <h2>Food List</h2>
 <table class = "table table-striped">
     <thead>
-        <th>Image</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Price</th>
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Actions</th>
+        </tr>
     </thead>
     <tbody>
         <tr *ngFor = "let food of foods">
@@ -14,6 +17,9 @@
             <td>{{ food.name }}</td>
             <td>{{ food.description }}</td>
             <td>{{ food.price }}</td>
+            <td>
+                <button class="btn btn-primary" [routerLink]="['/foods', food.id]">View Details</button>
+            </td>
         </tr>
     </tbody>
 </table>
