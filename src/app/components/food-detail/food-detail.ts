@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Food } from '../../services/food/food';
 import { FoodService } from '../../services/food/food.service';
 import { CommonModule } from '@angular/common';
 import { Cart } from '../../services/cart/cart';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-food-detail',
@@ -23,16 +24,26 @@ export class FoodDetail implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private foodService: FoodService,
-    private cartService: Cart
+    private cartService: Cart,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
-      this.id = Number(params.get('id'));
       this.loading = true;
       this.errorMessage = null;
       this.cartMessage = null;
       this.food = null;
+
+      const routeId = params.get('id');
+      const parsedId = Number(routeId);
+      if (!routeId || Number.isNaN(parsedId) || parsedId <= 0) {
+        this.errorMessage = 'Invalid food ID.';
+        this.loading = false;
+        return;
+      }
+
+      this.id = parsedId;
       this.getFoodById();
     });
   }
@@ -45,6 +56,7 @@ export class FoodDetail implements OnInit {
     this.cartService.createCartItem(this.food, 1).subscribe({
       next: () => {
         this.cartMessage = `${this.food?.name} added to cart.`;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error(err);
@@ -54,15 +66,18 @@ export class FoodDetail implements OnInit {
   }
 
   private getFoodById() {
-    this.foodService.getFoodById(this.id).subscribe({
+    this.foodService.getFoodById(this.id).pipe(
+      finalize(() => {
+        this.loading = false;
+      })
+    ).subscribe({
       next: (data) => {
         this.food = data;
-        this.loading = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error(err);
         this.errorMessage = 'Failed to load food details. Please try again.';
-        this.loading = false;
       },
     });
   }

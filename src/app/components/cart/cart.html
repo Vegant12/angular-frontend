@@ -22,34 +22,38 @@
     }
     <button class="btn btn-primary" routerLink="/foods">Browse Foods</button>
   } @else {
-    <table class="table table-striped mt-3">
-      <thead>
-        <tr>
-          <th>Item</th>
-          <th>Price</th>
-          <th>Quantity</th>
-          <th>Subtotal</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of cartItems">
-          <td>{{ item.food.name }}</td>
-          <td>${{ item.food.price }}</td>
-          <td>{{ item.quantity }}</td>
-          <td>${{ item.food.price * item.quantity }}</td>
-          <td>
-            <button class="btn btn-sm btn-outline-secondary me-2" (click)="decreaseQuantity(item)">-</button>
-            <button class="btn btn-sm btn-outline-secondary me-2" (click)="increaseQuantity(item)">+</button>
-            <button class="btn btn-sm btn-danger" (click)="removeItem(item)">Remove</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table class="table table-striped mt-3 align-middle">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of cartItems">
+            <td class="text-nowrap">{{ item.food.name }}</td>
+            <td class="text-nowrap">${{ item.food.price }}</td>
+            <td>{{ item.quantity }}</td>
+            <td class="text-nowrap">${{ item.food.price * item.quantity }}</td>
+            <td>
+              <div class="d-flex flex-wrap gap-2">
+                <button class="btn btn-sm btn-outline-secondary" (click)="decreaseQuantity(item)">-</button>
+                <button class="btn btn-sm btn-outline-secondary" (click)="increaseQuantity(item)">+</button>
+                <button class="btn btn-sm btn-danger" (click)="removeItem(item)">Remove</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-    <div class="d-flex justify-content-between align-items-center mt-3">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mt-3 gap-3">
       <h4 class="mb-0">Total: ${{ cartTotal }}</h4>
-      <div class="d-flex gap-2">
+      <div class="d-grid d-sm-flex gap-2">
         <button class="btn btn-success" (click)="checkout()" [disabled]="isCheckingOut">
           {{ isCheckingOut ? 'Processing...' : 'Checkout' }}
         </button>

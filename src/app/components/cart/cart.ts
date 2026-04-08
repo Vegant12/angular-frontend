@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Cart, CartItem } from '../../services/cart/cart';
@@ -21,7 +21,8 @@ export class CartComponent implements OnInit {
 
   constructor(
     private cartService: Cart,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -36,7 +37,8 @@ export class CartComponent implements OnInit {
   }
 
   increaseQuantity(item: CartItem): void {
-    this.updateQuantity(item, item.quantity + 1);
+    this.updateQuantity(item, item.quantity + 1)
+    this.cdr.markForCheck();;
   }
 
   decreaseQuantity(item: CartItem): void {
@@ -44,12 +46,14 @@ export class CartComponent implements OnInit {
       return;
     }
     this.updateQuantity(item, item.quantity - 1);
+    this.cdr.markForCheck();
   }
 
   removeItem(item: CartItem): void {
     this.cartService.deleteCartItem(item.id).subscribe({
       next: () => {
         this.cartItems = this.cartItems.filter((cartItem) => cartItem.id !== item.id);
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error(err);
@@ -102,6 +106,8 @@ export class CartComponent implements OnInit {
         this.isCheckingOut = false;
       },
     });
+
+    this.cdr.markForCheck();
   }
 
   private loadCartItems(): void {
@@ -109,6 +115,7 @@ export class CartComponent implements OnInit {
       next: (data) => {
         this.cartItems = data;
         this.loading = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error(err);
@@ -124,6 +131,7 @@ export class CartComponent implements OnInit {
         const index = this.cartItems.findIndex((cartItem) => cartItem.id === item.id);
         if (index !== -1) {
           this.cartItems[index] = updatedItem;
+          this.cdr.markForCheck();
         }
       },
       error: (err) => {

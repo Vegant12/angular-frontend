@@ -20,14 +20,16 @@
       <div class="accordion-item" *ngFor="let order of orders; let i = index">
         <h2 class="accordion-header" [id]="'heading' + i">
           <button
-            class="accordion-button collapsed"
+            class="accordion-button collapsed py-3"
             type="button"
             data-bs-toggle="collapse"
             [attr.data-bs-target]="'#collapse' + i"
             aria-expanded="false"
             [attr.aria-controls]="'collapse' + i"
           >
-            Order #{{ order.id }} - {{ order.status }} - Total: ${{ order.totalAmount ?? 0 }}
+            <span class="text-wrap">
+              Order #{{ order.id }} - {{ order.status }} - Total: ${{ order.totalAmount ?? 0 }}
+            </span>
           </button>
         </h2>
         <div
@@ -40,24 +42,26 @@
             <p class="mb-3">
               <strong>Date:</strong> {{ order.orderDate || 'N/A' }}
             </p>
-            <table class="table table-sm table-striped mb-0">
-              <thead>
-                <tr>
-                  <th>Item</th>
-                  <th>Price</th>
-                  <th>Quantity</th>
-                  <th>Subtotal</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let item of order.items">
-                  <td>{{ item.food.name }}</td>
-                  <td>${{ item.price }}</td>
-                  <td>{{ item.quantity }}</td>
-                  <td>${{ item.price * item.quantity }}</td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="table table-sm table-striped mb-0">
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of order.items">
+                    <td class="text-nowrap">{{ item.food.name }}</td>
+                    <td class="text-nowrap">${{ item.price }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td class="text-nowrap">${{ item.price * item.quantity }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

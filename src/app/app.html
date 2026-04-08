@@ -1,19 +1,19 @@
-<nav class="navbar navbar-expand-sm bg-primary navbar-dark">
-  <ul class="navbar-nav w-100">
+<nav class="navbar bg-primary navbar-dark px-2 px-md-3">
+  <ul class="navbar-nav w-100 d-flex flex-row flex-wrap align-items-center gap-1 gap-md-2">
     <li class="nav-item">
-      <a routerLink="foods" routerLinkActive="active" class="nav-link">User View</a>
+      <a [routerLink]="['/foods']" routerLinkActive="active" class="nav-link">User View</a>
     </li>
     <li class="nav-item">
-      <a routerLink="admin" routerLinkActive="active" class="nav-link">Admin View</a>
+      <a [routerLink]="['/admin']" routerLinkActive="active" class="nav-link">Admin View</a>
     </li>
     <li class="nav-item ms-auto">
-      <a routerLink="cart" routerLinkActive="active" class="nav-link">Cart</a>
+      <a [routerLink]="['/cart']" routerLinkActive="active" class="nav-link">Cart</a>
     </li>
   </ul>
 </nav>
 
-<h1 class="text-center">{{title}}</h1>
-<div class="container">
+<h1 class="text-center my-3 px-2">{{title}}</h1>
+<div class="container px-2 px-md-3 pb-4">
   <router-outlet></router-outlet>
 </div>
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Food } from '../../services/food/food';
@@ -26,7 +26,8 @@ export class AdminComponent implements OnInit {
 
   constructor(
     private foodService: FoodService,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -49,6 +50,7 @@ export class AdminComponent implements OnInit {
           this.formMessage = 'Food updated successfully.';
           this.cancelEdit();
           this.loadFoods();
+          this.cdr.markForCheck();
         },
         error: (err) => {
           console.error(err);
@@ -63,6 +65,7 @@ export class AdminComponent implements OnInit {
         this.formMessage = 'Food created successfully.';
         this.foodForm = this.createEmptyFood();
         this.loadFoods();
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error(err);
@@ -76,11 +79,13 @@ export class AdminComponent implements OnInit {
     this.foodForm = { ...food };
     this.formMessage = null;
     this.errorMessage = null;
+    this.cdr.markForCheck();
   }
 
   cancelEdit(): void {
     this.editingFoodId = null;
     this.foodForm = this.createEmptyFood();
+    this.cdr.markForCheck();
   }
 
   deleteFood(foodId: number): void {
@@ -94,6 +99,7 @@ export class AdminComponent implements OnInit {
           this.cancelEdit();
         }
         this.loadFoods();
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error(err);
@@ -108,6 +114,7 @@ export class AdminComponent implements OnInit {
       next: (data) => {
         this.foods = data;
         this.loadingFoods = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error(err);
@@ -123,6 +130,7 @@ export class AdminComponent implements OnInit {
       next: (data) => {
         this.orders = data;
         this.loadingOrders = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error(err);
