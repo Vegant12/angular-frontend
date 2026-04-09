@@ -1,59 +1,56 @@
-# AngularFrontend
+# Angular frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.6.
+## Project overview
 
-## Development server
+Single-page application for browsing foods, viewing details, managing a cart, placing orders, and basic admin flows. It is built with **Angular 21**, **Bootstrap 5**, and **Tailwind CSS** (PostCSS). The app talks to the Spring Boot backend over HTTP; services are configured for **`http://localhost:8080`** (REST base paths under `/api/v1/`). Ensure the backend is running and allows browser requests (CORS) when developing locally.
 
-To start a local development server, run:
+## Setup and installation
 
-```bash
-ng serve
-```
+### Prerequisites
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- **Node.js** (LTS recommended; aligns with npm used in this repo)  
+- **npm** (see `packageManager` in `package.json` if you use Corepack)  
 
-## Code scaffolding
+### Install dependencies
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+From this directory (`angular-frontend`):
 
 ```bash
-ng generate --help
+npm install
 ```
 
-## Building
+## How to run the application
 
-To build the project run:
+### Development server
 
 ```bash
-ng build
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+This runs `ng serve`. By default the app is available at **`http://localhost:4200/`**. The dev server reloads when you change source files.
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+If port 4200 is busy, use another port:
 
 ```bash
-ng test
+npx ng serve --port 4300
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+### Production build
 
 ```bash
-ng e2e
+npm run build
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Output is written under `dist/` (see `angular.json` for the exact project output path).
 
-## Additional Resources
+### Tests
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```bash
+npm test
+```
+
+This runs the Angular/Vitest unit test setup configured for this project.
+
+### Backend dependency
+
+The UI expects the API at **port 8080**. Start the `springboot-backend` service first. If the backend URL or CORS setup differs in your environment, update the service `baseURL` values under `src/app/services/` to match.
