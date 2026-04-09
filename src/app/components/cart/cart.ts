@@ -92,6 +92,7 @@ export class CartComponent implements OnInit {
             this.cartItems = [];
             this.checkoutMessage = `Order #${createdOrder.id ?? ''} placed successfully.`;
             this.isCheckingOut = false;
+            this.cdr.markForCheck();
           },
           error: (err) => {
             console.error(err);

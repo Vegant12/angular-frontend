@@ -43,11 +43,6 @@ npm run build
 
 Output is written under `dist/` (see `angular.json` for the exact project output path).
 
-### Tests
-
-```bash
-npm test
-```
 
 This runs the Angular/Vitest unit test setup configured for this project.
 
