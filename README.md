@@ -35,6 +35,11 @@ If port 4200 is busy, use another port:
 npx ng serve --port 4300
 ```
 
+### Admin Authentication
+
+username: admin
+password: admin123
+
 ### Production build
 
 ```bash
