@@ -17,7 +17,7 @@
               </td>
               <td class="text-nowrap">{{ food.name }}</td>
               <td style="min-width: 220px;">{{ food.description }}</td>
-              <td class="text-nowrap">${{ food.price }}</td>
+              <td class="text-nowrap">Rp {{ food.price }}</td>
               <td>
                   <button class="btn btn-primary btn-sm w-100 w-md-auto" [routerLink]="['/foods', food.id]">View Details</button>
               </td>

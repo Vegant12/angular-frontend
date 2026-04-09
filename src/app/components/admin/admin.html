@@ -8,98 +8,119 @@
     <div class="alert alert-success mt-3" role="alert">{{ formMessage }}</div>
   }
 
-  <div class="card mt-3 p-3">
-    <h4>{{ editingFoodId ? 'Update Food' : 'Create Food' }}</h4>
-    <div class="row g-2">
-      <div class="col-12 col-md-3">
-        <input class="form-control" placeholder="Name" [(ngModel)]="foodForm.name" />
-      </div>
-      <div class="col-12 col-md-3">
-        <input class="form-control" placeholder="Description" [(ngModel)]="foodForm.description" />
-      </div>
-      <div class="col-6 col-md-2">
-        <input class="form-control" type="number" placeholder="Price" [(ngModel)]="foodForm.price" />
-      </div>
-      <div class="col-12 col-md-4">
-        <input class="form-control" placeholder="Image URL" [(ngModel)]="foodForm.imageUrl" />
+  @if (!isAuthenticated) {
+    <div class="card mt-3 p-3">
+      <h4>Admin Login</h4>
+      <div class="row g-2">
+        <div class="col-12 col-md-4">
+          <input class="form-control" placeholder="Username" [(ngModel)]="adminUsername" />
+        </div>
+        <div class="col-12 col-md-4">
+          <input class="form-control" type="password" placeholder="Password" [(ngModel)]="adminPassword" />
+        </div>
+        <div class="col-12 col-md-4 d-grid">
+          <button class="btn btn-primary" (click)="loginAdmin()">Login</button>
+        </div>
       </div>
     </div>
-    <div class="d-grid d-sm-flex gap-2 mt-3">
-      <button class="btn btn-primary" (click)="saveFood()">
-        {{ editingFoodId ? 'Update Food' : 'Create Food' }}
-      </button>
-      @if (editingFoodId) {
-        <button class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
-      }
-    </div>
-  </div>
-
-  <h4 class="mt-4">Foods</h4>
-  @if (loadingFoods) {
-    <p>Loading foods...</p>
   } @else {
-    <div class="table-responsive">
-      <table class="table table-striped align-middle">
-        <thead>
-          <tr>
-            <th>Image</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Price</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let food of foods">
-            <td><img [src]="food.imageUrl" [alt]="food.name" width="80" class="rounded object-fit-cover" /></td>
-            <td class="text-nowrap">{{ food.name }}</td>
-            <td style="min-width: 220px;">{{ food.description }}</td>
-            <td class="text-nowrap">${{ food.price }}</td>
-            <td>
-              <div class="d-flex flex-wrap gap-2">
-                <button class="btn btn-sm btn-outline-primary" (click)="editFood(food)">Edit</button>
-                <button class="btn btn-sm btn-danger" (click)="deleteFood(food.id)">Delete</button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="d-flex justify-content-end mt-3">
+      <button class="btn btn-outline-secondary btn-sm" (click)="logoutAdmin()">Logout</button>
     </div>
-  }
 
-  <h4 class="mt-4">Orders</h4>
-  @if (loadingOrders) {
-    <p>Loading orders...</p>
-  } @else if (orders.length === 0) {
-    <p>No orders available.</p>
-  } @else {
-    <div class="table-responsive">
-      <table class="table table-bordered align-middle">
-        <thead>
-          <tr>
-            <th>Order ID</th>
-            <th>Date</th>
-            <th>Status</th>
-            <th>Total</th>
-            <th>Items</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let order of orders">
-            <td class="text-nowrap">#{{ order.id }}</td>
-            <td class="text-nowrap">{{ order.orderDate || 'N/A' }}</td>
-            <td class="text-nowrap">{{ order.status }}</td>
-            <td class="text-nowrap">${{ order.totalAmount ?? 0 }}</td>
-            <td style="min-width: 240px;">
-              <ul class="mb-0 ps-3">
-                <li *ngFor="let item of order.items">
-                  {{ item.food.name }} x{{ item.quantity }} (${{ item.price }})
-                </li>
-              </ul>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="card mt-3 p-3">
+      <h4>{{ editingFoodId ? 'Update Food' : 'Create Food' }}</h4>
+      <div class="row g-2">
+        <div class="col-12 col-md-3">
+          <input class="form-control" placeholder="Name" [(ngModel)]="foodForm.name" />
+        </div>
+        <div class="col-12 col-md-3">
+          <input class="form-control" placeholder="Description" [(ngModel)]="foodForm.description" />
+        </div>
+        <div class="col-6 col-md-2">
+          <input class="form-control" type="number" placeholder="Price" [(ngModel)]="foodForm.price" />
+        </div>
+        <div class="col-12 col-md-4">
+          <input class="form-control" placeholder="Image URL" [(ngModel)]="foodForm.imageUrl" />
+        </div>
+      </div>
+      <div class="d-grid d-sm-flex gap-2 mt-3">
+        <button class="btn btn-primary" (click)="saveFood()">
+          {{ editingFoodId ? 'Update Food' : 'Create Food' }}
+        </button>
+        @if (editingFoodId) {
+          <button class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+        }
+      </div>
     </div>
+
+    <h4 class="mt-4">Foods</h4>
+    @if (loadingFoods) {
+      <p>Loading foods...</p>
+    } @else {
+      <div class="table-responsive">
+        <table class="table table-striped align-middle">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Price</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let food of foods">
+              <td><img [src]="food.imageUrl" [alt]="food.name" width="80" class="rounded object-fit-cover" /></td>
+              <td class="text-nowrap">{{ food.name }}</td>
+              <td style="min-width: 220px;">{{ food.description }}</td>
+              <td class="text-nowrap">Rp {{ food.price }}</td>
+              <td>
+                <div class="d-flex flex-wrap gap-2">
+                  <button class="btn btn-sm btn-outline-primary" (click)="editFood(food)">Edit</button>
+                  <button class="btn btn-sm btn-danger" (click)="deleteFood(food.id)">Delete</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    }
+
+    <h4 class="mt-4">Orders</h4>
+    @if (loadingOrders) {
+      <p>Loading orders...</p>
+    } @else if (orders.length === 0) {
+      <p>No orders available.</p>
+    } @else {
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Total</th>
+              <th>Items</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of orders">
+              <td class="text-nowrap">#{{ order.id }}</td>
+              <td class="text-nowrap">{{ order.orderDate || 'N/A' }}</td>
+              <td class="text-nowrap">{{ order.status }}</td>
+              <td class="text-nowrap">Rp {{ order.totalAmount ?? 0 }}</td>
+              <td style="min-width: 240px;">
+                <ul class="mb-0 ps-3">
+                  <li *ngFor="let item of order.items">
+                    {{ item.food.name }} x{{ item.quantity }} (Rp {{ item.price }})
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    }
   }
 </div>

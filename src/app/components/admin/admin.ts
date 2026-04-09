@@ -5,6 +5,7 @@ import { Food } from '../../services/food/food';
 import { FoodService } from '../../services/food/food.service';
 import { Order } from '../../services/order/order';
 import { OrderService } from '../../services/order/order.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-admin',
@@ -20,6 +21,9 @@ export class AdminComponent implements OnInit {
   loadingOrders = true;
   errorMessage: string | null = null;
   formMessage: string | null = null;
+  adminUsername = 'admin';
+  adminPassword = '';
+  isAuthenticated = false;
 
   foodForm: Food = this.createEmptyFood();
   editingFoodId: number | null = null;
@@ -27,10 +31,59 @@ export class AdminComponent implements OnInit {
   constructor(
     private foodService: FoodService,
     private orderService: OrderService,
+    private authService: AuthService,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.isAuthenticated = this.authService.isLoggedIn();
+    if (!this.isAuthenticated) {
+      this.loadingFoods = false;
+      this.loadingOrders = false;
+      return;
+    }
+
+    this.loadAdminData();
+  }
+
+  loginAdmin(): void {
+    this.errorMessage = null;
+    this.formMessage = null;
+
+    if (!this.adminUsername.trim() || !this.adminPassword.trim()) {
+      this.errorMessage = 'Username and password are required.';
+      return;
+    }
+
+    this.authService.login(this.adminUsername.trim(), this.adminPassword).subscribe({
+      next: () => {
+        this.isAuthenticated = true;
+        this.adminPassword = '';
+        this.loadAdminData();
+      },
+      error: (err) => {
+        console.error(err);
+        this.errorMessage = 'Invalid admin credentials.';
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  logoutAdmin(): void {
+    this.authService.logout();
+    this.isAuthenticated = false;
+    this.foods = [];
+    this.orders = [];
+    this.foodForm = this.createEmptyFood();
+    this.editingFoodId = null;
+    this.formMessage = null;
+    this.errorMessage = null;
+    this.loadingFoods = false;
+    this.loadingOrders = false;
+    this.cdr.markForCheck();
+  }
+
+  private loadAdminData(): void {
     this.loadFoods();
     this.loadOrders();
   }
